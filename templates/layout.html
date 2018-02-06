@@ -10,13 +10,16 @@
 <body>
     {% include 'includes/navbar.html' %}
     <div class="container">
-    {% block body %}
+        
+        {% include "includes/_messages.html" %}
+
+        {% block body %}
     
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js">
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js">
 
-    </script>
+        </script>
 
-    {% endblock %}
-</div>
+        {% endblock %}
+    </div>
 </body>
 </html>
