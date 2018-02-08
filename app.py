@@ -89,6 +89,7 @@ def login():
                 app.logger.info('PASSWORD MATCHED')
                 session['logged_in'] = True
                 session['username'] = username
+                session['name'] = data['name']
 
                 flash('You are now logged in', 'success')
                 return redirect(url_for('dashboard'))
@@ -118,6 +119,28 @@ def is_logged_in(f):
 @is_logged_in
 def dashboard():
     return render_template('dashboard.html')
+
+#article form class
+class ArticleForm(Form):
+    title = StringField('Title', [validators.Length(min=1, max=255)])
+    body = TextAreaField('Body', [validators.Length(min=30)])
+
+@app.route('/add_article', methods=['GET', 'POST'])
+@is_logged_in
+def add_article():
+    form = ArticleForm(request.form)
+    if request.method == 'POST' and form.validate():
+        title = form.title.data
+        body = form.body.data
+
+        #create cursor
+        cur = mysql.connection.cursor()
+        cur.execute("INSERT INTO articles(title, body, author) VALUES(%s,%s,%s)", (title, body, session['username']))
+        mysql.connection.commit()
+        cur.close()
+        flash('Article successfully created', 'success')
+        return redirect(url_for('dashboard'))
+    return render_template('add_article.html', form=form)
 
 @app.route('/logout')
 @is_logged_in
